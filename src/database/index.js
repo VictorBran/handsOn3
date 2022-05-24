@@ -14,7 +14,7 @@ let db = {};
 try {
     db = new Sequelize(DB_NAME, DB_USER, DB_PASS, DB_CONFIG);
 } catch (error) {
-   console.error("erro ao tentar a conexão") 
+   console.error("erro ao tentar a conexão", error.message) 
 }
 
 const hasConnection = async () => {
@@ -22,7 +22,7 @@ const hasConnection = async () => {
         await db.authenticate();
         console.log("banco conectado :)")
     } catch (error) {
-        console.error("erro ao tentar conectar :(")
+        console.error("erro ao tentar conectar :(", error.message)
     }
 }
 

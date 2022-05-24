@@ -1,8 +1,13 @@
 const express = require('express');
-const routes = express.Router();
+const router = express.Router();
 
 const homeController = require("../controller/home");
+const PsicologoController = require ("../controller/psicologo");
 
-routes.get("/", homeController.index);
+router.get("/", homeController.index);
 
-module.exports = routes;
+router.get("/psicologos", PsicologoController.index);
+router.post("/psicologos", PsicologoController.store);
+router.delete("/psicologos/:id", PsicologoController.destroy);
+
+module.exports = router;
