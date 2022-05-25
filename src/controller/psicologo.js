@@ -1,26 +1,49 @@
-const Psicologo  = require("../models/Psicologo");
+const Psicologo = require("../models/Psicologo");
 
 const PsicologoController = {
-    index: async (req, res) =>{
+    index: async (req, res) => {
         try {
             const allPsicologos = await Psicologo.findAll();
             res.status(201).json(allPsicologos);
-            
+
         } catch (error) {
             console.log(error.message);
             res
                 .status(200)
-                .json({error})
+                .json({ error })
         }
     },
-    
-    store: async (req, res) =>{
+
+    show: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const { nome, email, apresentacao } = await Psicologo.findByPk(id);
+
+            const psicologoById = { nome, email, apresentacao }
+
+            if (psicologoById) {
+                return res.json(psicologoById);
+            }
+
+            res.status(404).json({
+                message: "Id não encontrado",
+            });
+        } catch (error) {
+            console.log(error.message);
+
+            res
+                .status(500)
+                .json({ error: "erro encontrado :(, tente mais uma vez." });
+        }
+    },
+
+    store: async (req, res) => {
         try {
             const {
-                nome, 
-                email, 
-                senha, 
-                apresentacao, 
+                nome,
+                email,
+                senha,
+                apresentacao,
             } = req.body;
 
             const novoPsicologo = await Psicologo.create({
@@ -29,40 +52,59 @@ const PsicologoController = {
                 senha,
                 apresentacao,
             });
-            
+
             res.json(novoPsicologo);
         } catch (error) {
-        console.log(error.message);
-        res
-        .status(500)
-        .json({ error: "erro :(, tente novamente com todos os campos preenchidos" });
-        }     
+            console.log(error.message);
+            res
+                .status(500)
+                .json({ error: "erro :(, tente novamente com todos os campos preenchidos" });
+        }
     },
 
-    destroy : async (req, res) =>{
-        const { id } = req.params;
-        
+    update: async (req, res) => {
         try {
+            const { id } = req.params;
+            const { nome, email, senha, apresentacao } = req.body;
+        
+            await Psicologo.update(
+                { nome, email, senha, apresentacao },
+                { where: { id_psicologo: id, },}
+
+            );
+           
+            const psicologoAtualizado = await Psicologo.findByPk(id)
+            res.json(psicologoAtualizado);
+        } catch (error) {
+
+            res.status(400).json({ error: "Erro na requisição" });
+
+        }
+    },
+
+    destroy: async (req, res) => {
+        try {
+            const { id } = req.params;
             const psicologo = await Psicologo.findByPk(id);
 
-            if(!psicologo){
+            if (!psicologo) {
 
                 res.status(404).json({
                     message: "ID não encontrado",
-                  });
+                });
             }
             await psicologo.destroy();
 
             res.status(204).send("");
-            
+
         } catch (error) {
             console.log(error.message);
             res
-            .status(500)
-            .json({ error: "erro encontrado :(, tente mais uma vez." });
+                .status(500)
+                .json({ error: "erro encontrado :(, tente mais uma vez." });
             ;
         }
-        
+
     }
 }
 
