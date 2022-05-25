@@ -1,10 +1,10 @@
-const Psicologo = require("../models/Psicologo");
+const Paciente = require("../models/Paciente")
 
-const psicologoController = {
+const pacienteController = {
     index: async (req, res) => {
         try {
-            const allPsicologos = await Psicologo.findAll();
-            res.status(201).json(allPsicologos);
+            const allPacientes = await Paciente.findAll();
+            res.status(201).json(allPacientes);
 
         } catch (error) {
             console.log(error.message);
@@ -17,12 +17,12 @@ const psicologoController = {
     show: async (req, res) => {
         try {
             const { id } = req.params;
-            const { nome, email, apresentacao } = await Psicologo.findByPk(id);
+            const { nome, email, data_nascimento } = await Paciente.findByPk(id);
 
-            const psicologoById = { nome, email, apresentacao }
+            const pacienteById = { nome, email, data_nascimento }
 
-            if (psicologoById) {
-                return res.json(psicologoById);
+            if (pacienteById) {
+                return res.json(pacienteById);
             }
 
         } catch (error) {
@@ -38,19 +38,17 @@ const psicologoController = {
         try {
             const {
                 nome,
-                email,
-                senha,
-                apresentacao,
+                email,                
+                data_nascimento,
             } = req.body;
 
-            const novoPsicologo = await Psicologo.create({
+            const novoPaciente = await Paciente.create({
                 nome,
-                email,
-                senha,
-                apresentacao,
+                email,                
+                data_nascimento,
             });
 
-            res.json(novoPsicologo);
+            res.json(novoPaciente);
         } catch (error) {
             console.log(error.message);
             res
@@ -62,17 +60,17 @@ const psicologoController = {
     update: async (req, res) => {
         try {
             const { id } = req.params;
-            const { nome, email, senha, apresentacao } = req.body;
+            const { nome, email, data_nascimento } = req.body;
 
 
-            await Psicologo.update(
-                { nome, email, senha, apresentacao },
-                { where: { id_psicologo: id, }, }
+            await Paciente.update(
+                { nome, email, data_nascimento },
+                { where: { id_paciente: id, }, }
 
             );
 
-            const psicologoAtualizado = await Psicologo.findByPk(id)
-            res.json(psicologoAtualizado);
+            const pacienteAtualizado = await Paciente.findByPk(id)
+            res.json(pacienteAtualizado);
         } catch (error) {
 
             res.status(400).json({ error: "Erro na requisição" });
@@ -83,15 +81,15 @@ const psicologoController = {
     destroy: async (req, res) => {
         try {
             const { id } = req.params;
-            const psicologo = await Psicologo.findByPk(id);
+            const paciente = await Paciente.findByPk(id);
 
-            if (!psicologo) {
+            if (!paciente) {
 
                 res.status(404).json({
                     message: "ID não encontrado",
                 });
             }
-            await psicologo.destroy();
+            await paciente.destroy();
 
             res.status(204).send("");
 
@@ -106,4 +104,4 @@ const psicologoController = {
     }
 }
 
-module.exports = psicologoController
+module.exports = pacienteController
