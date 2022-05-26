@@ -67,9 +67,10 @@ const psicologoController = {
             const { id } = req.params;
             const { nome, email, senha, apresentacao } = req.body;
 
+            const novaSenha = bcrypt.hashSync(senha, 10)
 
             await Psicologo.update(
-                { nome, email, senha, apresentacao },
+                { nome, email, senha: novaSenha, apresentacao },
                 { where: { id_psicologo: id, }, }
 
             );
@@ -100,8 +101,8 @@ const psicologoController = {
 
         } catch (error) {
             res
-                .status(500)
-                .json({ error: "erro encontrado :(, tente mais uma vez." });
+                .status(409)
+                .json({ error: "Ação não permitida" });
             ;
         }
 

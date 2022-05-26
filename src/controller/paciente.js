@@ -66,10 +66,17 @@ const pacienteController = {
             await Paciente.update(
                 { nome, email, data_nascimento },
                 { where: { id_paciente: id, }, }
-
             );
 
             const pacienteAtualizado = await Paciente.findByPk(id)
+
+            if (!pacienteAtualizado) {
+
+                res.status(404).json({
+                    message: "ID não encontrado",
+                });
+            }
+
             res.json(pacienteAtualizado);
         } catch (error) {
 
@@ -96,8 +103,8 @@ const pacienteController = {
         } catch (error) {
             console.log(error.message);
             res
-                .status(500)
-                .json({ error: "erro encontrado :(, tente mais uma vez." });
+                .status(409)
+                .json({ error: "Ação não permitida" });
             ;
         }
 

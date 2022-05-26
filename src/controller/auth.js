@@ -26,7 +26,7 @@ const authController = {
 
         const token = jwt.sign(psicologoUser, secret.key);
 
-        return res.status(201).json({
+        return res.status(200).json({
             token,
             psicologoUser,
           });
