@@ -3,11 +3,16 @@ const router = express.Router();
 
 const homeController = require("../controller/home");
 const psicologoController = require ("../controller/psicologo");
-const pacienteController = require ("../controller/paciente.js")
-const atendimentoController = require("../controller/atendimento")
+const pacienteController = require ("../controller/paciente.js");
+const atendimentoController = require("../controller/atendimento");
+const authController = require("../controller/auth");
 
-const psicologoAtualizetionValidation = require("../validations/psicologos/atualize")
-const pacienteAtualizationValidation = require("../validations/paciente/atualize")
+const psicologoAtualizetionValidation = require("../validations/psicologos/atualize");
+const pacienteAtualizationValidation = require("../validations/paciente/atualize");
+const authLoginValidation = require("../validations/auth/login");
+
+const jwt = require("../middleware/jwt")
+const auth = require("../middleware/auth")
 
 router.get("/", homeController.index);
 
@@ -24,7 +29,9 @@ router.delete("/pacientes/:id", pacienteController.destroy);
 router.put("/pacientes/:id", pacienteAtualizationValidation, pacienteController.update);
 
 router.get("/atendimentos", atendimentoController.index);
-router.post("/atendimentos",  atendimentoController.store);
+router.post("/atendimentos", auth, jwt, atendimentoController.store);
 router.get("/atendimentos/:id", atendimentoController.show);
+
+router.post("/login",authLoginValidation , authController.login)
 
 module.exports = router;
