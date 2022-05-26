@@ -1,4 +1,5 @@
 const Psicologo = require("../models/Psicologo");
+const bcrypt = require("bcryptjs")
 
 const psicologoController = {
     index: async (req, res) => {
@@ -43,11 +44,13 @@ const psicologoController = {
                 apresentacao,
             } = req.body;
 
+            const novaSenha = bcrypt.hashSync(senha, 10)
+
             const novoPsicologo = await Psicologo.create({
                 nome,
                 email,
-                senha,
-                apresentacao,
+                senha: novaSenha,  
+                apresentacao,                             
             });
 
             res.json(novoPsicologo);
@@ -96,7 +99,6 @@ const psicologoController = {
             res.status(204).send("");
 
         } catch (error) {
-            console.log(error.message);
             res
                 .status(500)
                 .json({ error: "erro encontrado :(, tente mais uma vez." });
